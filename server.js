@@ -1,15 +1,20 @@
+// Set up Dependencies
+
 const express = require("express");
 const path = require ("path");
 const fs = require ("fs");
 
+// Set up Express
 const app = express();
 const PORT = process.env.PORT || 3000;
 const mainDir = path.join(__dirname, "/public");
 
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
-app. use(express.json());
+app.use(express.json());
 
+
+// Retrieve notes from the db.json file and show on the front end
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(mainDir, "notes.html"));
 });
@@ -28,7 +33,7 @@ app.get("*", function(req, res) {
 });
 
 
-
+// to save a note to the db.json file
 app.post("/api/notes", function(req, res) {
     let savedNotes = JSON.parse(fs.readFileSync("db/db.json", "utf8"));
     let newNote = req.body;
@@ -41,6 +46,7 @@ app.post("/api/notes", function(req, res) {
     res.json(savedNotes);
 })
 
+// To delete a note from the db.json file
 app.delete("/api/notes/:id", function(req, res) {
     let savedNotes = JSON.parse(fs.readFileSync("db/db.json", "utf8"));
     let noteID = req.params.id;
@@ -59,7 +65,7 @@ app.delete("/api/notes/:id", function(req, res) {
     res.json(savedNotes);
 })
 
-
+// Start the server
 app.listen(PORT, function() {
     console.log(`Now listening to PORT ${PORT}.`);
 })
